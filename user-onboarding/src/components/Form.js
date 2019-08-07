@@ -88,17 +88,17 @@ const FormikNewUserForm = withFormik({
         termsofservice: Yup.string().required('Please agree to Terms'),
     }),
 
-    handleSubmit(values, { setStatus, setErrors, setSubmitting }) {
-        if (values.email === "alreadytaken@atb.dev") {
+    handleSubmit(values, { setStatus, setErrors, resetForm }) {
+        if (values.email === "waffle@syrup.com") {
             setErrors({ email: "That email is already taken" });
         } else {
         axios
           .post('https://reqres.in/api/users/', values)
           .then(res => {
             setStatus(res.data);
+            resetForm();
           })
           .catch(err => console.log(err.response));
-          setSubmitting(false);
         }
     }
 })(NewUserForm);
