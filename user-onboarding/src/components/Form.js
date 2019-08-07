@@ -60,9 +60,9 @@ const NewUserForm = ({errors, touched, values, status }) => {
                 </Form>
             </div>
             <div className='user-list'>
-                <h2>Users:</h2>
+                <h1>Users:</h1>
                     {users.map(user => (
-                        <li key={user.id}>{user.firstname} {user.lastname}</li>
+                        <li className="userlist" key={user.id}>{user.firstname} {user.lastname}</li>
                     ))}
             </div>
         </div>
