@@ -23,7 +23,7 @@ const NewUserForm = ({errors, touched, values, status }) => {
     }, [status]);
 
     return (
-        <div>
+        <div className='container'>
             <div className='user-form'>
                 <h1>New User Form</h1>
                 <Form>
@@ -52,15 +52,17 @@ const NewUserForm = ({errors, touched, values, status }) => {
                             name="termsofservice"
                             checked={values.termsofservice}
                         />
+                        {touched.termsofservice && errors.termsofservice && 
+                            (<p className="error">{errors.termsofservice}</p>)}
                         <span className="checkmark" />
                     </label>
                     <button type="submit">Submit</button>
                 </Form>
             </div>
-            <div>
+            <div className='user-list'>
                 <h2>Users:</h2>
                     {users.map(user => (
-                        <p key={user.id}>{user.firstname} {user.lastname}</p>
+                        <li key={user.id}>{user.firstname} {user.lastname}</li>
                     ))}
             </div>
         </div>
@@ -74,7 +76,7 @@ const FormikNewUserForm = withFormik({
             lastname: lastname || '',
             email: email || '',
             password: password || '',
-            termsofservice: termsofservice || ''
+            termsofservice: termsofservice || false
         };
     },
 
@@ -82,18 +84,23 @@ const FormikNewUserForm = withFormik({
         firstname: Yup.string().required('Enter your first name'),
         lastname: Yup.string().required('Enter your last name'),
         email: Yup.string().required('Please enter an email'),
-        password: Yup.string().required('Please enter a password')
+        password: Yup.string().min(5, "Password must be 5 characters or longer").required("Password is required"),
+        termsofservice: Yup.string().required('Please agree to Terms'),
     }),
 
-    handleSubmit(values, { setStatus }) {
+    handleSubmit(values, { setStatus, setErrors, setSubmitting }) {
+        if (values.email === "alreadytaken@atb.dev") {
+            setErrors({ email: "That email is already taken" });
+        } else {
         axios
           .post('https://reqres.in/api/users/', values)
           .then(res => {
             setStatus(res.data);
           })
           .catch(err => console.log(err.response));
+          setSubmitting(false);
+        }
     }
-
 })(NewUserForm);
 
 export default FormikNewUserForm;
