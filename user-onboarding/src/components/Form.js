@@ -3,14 +3,20 @@ import axios from 'axios';
 import { Form, Field, withFormik } from 'formik';
 import * as Yup from "yup";
 
-// We want to create a form to onboard a new user to our system. 
 // We need _at least_ the following pieces of information about our new user:
 
-// - Name
-// - Email
-// - Password
-// - Terms of Service (checkbox)
-// - A Submit button to send our form data to the server.
+// -[X] Name
+// -[X] Email
+// -[X] Password
+// -[X] Terms of Service (checkbox)
+// -[X] A Submit button to send our form data to the server.
+
+//Stretch:
+// -[ ] Dropdown Menu. 
+//    Add a `role` value to your Formik HOC and add a dropdown with 
+//    different roles for your users.
+// -[ ] Create 3 new inputs of your choice along with corresponding 
+//    validation and error messaging
 
 const NewUserForm = ({errors, touched, values, status }) => {
     const [users, setUsers] = useState([]);
@@ -52,17 +58,21 @@ const NewUserForm = ({errors, touched, values, status }) => {
                             name="termsofservice"
                             checked={values.termsofservice}
                         />
-                        {touched.termsofservice && errors.termsofservice && 
-                            (<p className="error">{errors.termsofservice}</p>)}
                         <span className="checkmark" />
                     </label>
+                        <div>
+                            {touched.termsofservice && errors.termsofservice && 
+                                (<p className="error">{errors.termsofservice}</p>)}
+                        </div>
                     <button type="submit">Submit</button>
                 </Form>
             </div>
             <div className='user-list'>
                 <h1>Users:</h1>
                     {users.map(user => (
-                        <li className="userlist" key={user.id}>{user.firstname} {user.lastname}</li>
+                        <li className="userlist" key={user.id}>
+                            {user.firstname} {user.lastname}
+                        </li>
                     ))}
             </div>
         </div>
@@ -85,7 +95,7 @@ const FormikNewUserForm = withFormik({
         lastname: Yup.string().required('Enter your last name'),
         email: Yup.string().required('Please enter an email'),
         password: Yup.string().min(5, "Password must be 5 characters or longer").required("Password is required"),
-        termsofservice: Yup.string().required('Please agree to Terms'),
+        termsofservice: Yup.bool().oneOf([true], 'Please agree to Terms'),
     }),
 
     handleSubmit(values, { setStatus, setErrors, resetForm }) {
